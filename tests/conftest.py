@@ -1,6 +1,7 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from pages.login_page import LoginPage
 
 
 def pytest_addoption(parser):
@@ -25,4 +26,12 @@ def driver(browser):
     else:
         driver = webdriver.Safari()
     yield driver
-    driver.close()
+    # driver.close()
+
+@pytest.fixture
+def login(driver):
+    if driver.get_cookie('FrameProfile') is None:
+        testarena = LoginPage(driver)
+        cockpit_page = testarena.login()
+        cockpit_page.assert_all_widgets()
+    return driver

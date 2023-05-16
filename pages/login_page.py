@@ -2,7 +2,7 @@ import pytest
 from selenium.webdriver.common.by import By
 from common.logger import Logger
 from .credentials_page import TestarenaCredentialsPage
-
+from .cockpit_page import Cockpit
 
 class LoginPage:
     def __init__(self, driver) -> None:
@@ -20,4 +20,7 @@ class LoginPage:
         password.send_keys(self.credentials.password)
         login_button.click()
         assert self.driver.current_url == 'http://demo.testarena.pl/'
-
+        assert self.driver.get_cookie('FrameProfile') is not None
+        cockpit_page = Cockpit(self.driver)
+        cockpit_page.assert_all_widgets()
+        return cockpit_page
