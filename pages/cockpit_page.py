@@ -1,11 +1,13 @@
 import pytest
 from selenium.webdriver.common.by import By
-from .main_app_page import MainAppPage
+from .core_app_page import CoreAppPage
 
 
-class Cockpit(MainAppPage):
+class Cockpit(CoreAppPage):
     def __init__(self, driver) -> None:
         super().__init__(driver)
+        
+        self.url = 'http://demo.testarena.pl/'
 
     def assert_all_widgets(self):
         headers = self.driver.find_elements(By.TAG_NAME, 'h4')

@@ -17,6 +17,8 @@ class TestarenaCredentialsPage:
         self.log.debug(copy)
         self.username = copy[0].split(': ')[1]
         self.password = copy[1].split(': ')[1]
+        self.log.info(f'{self.username}:{self.password}')
+        self.log.debug(f'{type(self.username)}:{type(self.password)}')
 
         assert self.username is not None
         assert self.password is not None

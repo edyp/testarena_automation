@@ -1,15 +1,14 @@
-import json
 from time import sleep
 import pytest
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from .main_app_page import MainAppPage
+from .core_app_page import CoreAppPage
 
 
-class TasksPage(MainAppPage):
+class TasksPage(CoreAppPage):
     def __init__(self, driver) -> None:
         super().__init__(driver)
 
+        self.url = 'http://demo.testarena.pl/KK/tasks'
         self.add_task_button = (By.CLASS_NAME, 'button_link_nav')
         self.select_all_button = (By.ID, 'j_multiSelect_selectAllButton_task3306')
         self.delete_selected = (By.CLASS_NAME, 'j_delete_tasks')
@@ -31,10 +30,11 @@ class TasksPage(MainAppPage):
         assert self.driver.find_element(*(self.empty_task_list)).is_displayed()
 
 
-class AddTaskForm(MainAppPage):
+class AddTaskForm(CoreAppPage):
     def __init__(self, driver) -> None:
         super().__init__(driver)
 
+        self.url = 'http://demo.testarena.pl/KK/task_add'
         self.title = (By.ID, 'title')
         self.description = (By.ID, 'description')
         self.release = (By.ID, 'releaseName')
@@ -45,35 +45,34 @@ class AddTaskForm(MainAppPage):
         self.assignee = (By.ID, 'assigneeName')
         self.tags = (By.ID, 'token-input-tags')
         self.save_button = (By.ID, 'save')
+        self.cancel_button = (By.CLASS_NAME, 'j_cancel_button')
 
-    def _load_task_data(self, path='common/static/task_data.json'):
-        with open(path) as task_data_f:
-            return json.load(task_data_f)
-
-    def fill(self, data=None):
-        if data is None:
-            data = self._load_task_data()
-        task = data['correct']
-        self.type_text(self.title, task['title'])
-        self.type_text(self.description, task['description'])
-        self.type_tag(self.release, task['release'])
-        self.type_tag(self.environments, task['environment'])
-        self.type_tag(self.versions, task['version'])
-        self.select(self.priority, task['priority'])
-        self.type_text(self.due_date, task['due_date'])
-        self.type_tag(self.assignee, task['assignee'])
-        self.type_tag(self.tags, task['tag'])
+    def fill(self, data):
+        self.type_text(self.title, data['title'])
+        self.type_text(self.description, data['description'])
+        self.type_tag(self.release, data['release'])
+        self.type_tag(self.environments, data['environment'])
+        self.type_tag(self.versions, data['version'])
+        self.select(self.priority, data['priority'])
+        self.type_text(self.due_date, data['due_date'])
+        self.type_tag(self.assignee, data['assignee'])
+        self.type_tag(self.tags, data['tag'])
 
     def submit(self):
         self.driver.find_element(*(self.save_button)).click()
         assert 'task_view' in self.driver.current_url
         return TaskDetailsPage(self.driver)
+    
+    def cancel(self):
+        self.driver.find_element(*(self.cancel_button)).click()
+        assert TasksPage().url == self.driver.current_url
 
 
-class TaskDetailsPage(MainAppPage):
+class TaskDetailsPage(CoreAppPage):
     def __init__(self, driver) -> None:
         super().__init__(driver)
 
+        self.url = 'http://demo.testarena.pl/KK/task_view/'
         self.back_button = (By.XPATH, '//nav[@class="button_link_nav"]/ul/li')
 
     def close_task_details(self):

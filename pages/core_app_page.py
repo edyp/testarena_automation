@@ -7,18 +7,19 @@ from selenium.webdriver.support.ui import Select
 from common.logger import Logger
 
 
-class MainAppPage:
+class CoreAppPage:
     def __init__(self, driver) -> None:
         self.driver = driver
         self.log = Logger()
+        self.url = None
         # sidebar
         self.tasks = (By.XPATH, '//a[contains(@href, \'tasks\')]')
         # here should be listed all locators from sidebar
-        # navbar 
+        # header 
         self.project_dropdown = (By.ID, 'activeProject_chosen')
         self.project_search = (By.XPATH, '//div[contains(@class, "chosen-search")/input]')
         self.logout_button = (By.CLASS_NAME, 'header_logout')
-        # here should be listed all locators from navbar
+        # here should be listed all locators from header
         # modal
         self.success_modal = (By.ID, 'j_info_box')
         self.close_modal = (By.CLASS_NAME, 'j_close_button')
@@ -33,18 +34,16 @@ class MainAppPage:
             assert self.driver.find_element(self.project_dropdown).text == name
 
     def logout(self):
-        self.driver.find_element(self.logout_button).click()
+        self.driver.find_element(*(self.logout_button)).click()
         assert self.driver.current_url == 'http://demo.testarena.pl/zaloguj'
         assert self.driver.get_cookie('FrameProfile') is None
+        self.log.info('################ LOG OUT SUCESSFUL ################')
 
     def get_active_project(self):
         return self.driver.find_element(self.project_dropdown).text
-    # TODO: do wywalenia load_page...
-    def load_page(self, locator):
-        """locator: need to be tuple of webdriver.common.by and path
-            (expected to use this class attrs)
-        """
-        self.driver.find_element(*locator).click()
+
+    def load_page(self):
+        self.driver.get(self.url)
     
     def type_text(self, locator, text):
         field = self.driver.find_element(*locator)

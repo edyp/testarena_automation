@@ -1,7 +1,8 @@
+import json
 import pytest
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 from pages.login_page import LoginPage
+from pages.core_app_page import CoreAppPage
 
 
 def pytest_addoption(parser):
@@ -26,7 +27,7 @@ def driver(browser):
     else:
         driver = webdriver.Safari()
     yield driver
-    # driver.close()
+    driver.close()
 
 @pytest.fixture
 def login(driver):
@@ -34,4 +35,14 @@ def login(driver):
         testarena = LoginPage(driver)
         cockpit_page = testarena.login()
         cockpit_page.assert_all_widgets()
-    return driver
+
+@pytest.fixture
+def logout(driver):
+    if driver.get_cookie('FrameProfile') is not None:
+        CoreAppPage(driver).logout()
+
+@pytest.fixture
+def task_testing_data():
+    path='common/static/task_data.json'
+    with open(path) as task_data_f:
+        return json.load(task_data_f)

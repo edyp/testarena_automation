@@ -14,7 +14,7 @@ III. Performing a login using incorrect data
     pytest tests --browser='chrome'
 
 ### Important
-You need to have installed 1 out of 4 browser:
+You need to have installed at least 1 out of 4 browser installed locally:
 - Chrome
 - Firefox
 - Edge
