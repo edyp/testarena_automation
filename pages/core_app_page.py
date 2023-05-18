@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import ElementNotInteractableException
 from common.logger import Logger
 
 
@@ -66,4 +67,8 @@ class CoreAppPage:
         assert text == modal.get_attribute('innerText')
 
         if close:
-            self.driver.find_element(*(self.close_modal)).click()
+            try:
+                self.driver.find_element(*(self.close_modal)).click()
+            except ElementNotInteractableException:
+                sleep(1)
+                self.driver.find_element(*(self.close_modal)).click()

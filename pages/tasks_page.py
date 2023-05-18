@@ -50,7 +50,7 @@ class AddTaskForm(CoreAppPage):
     def fill(self, data):
         self.type_text(self.title, data['title'])
         self.type_text(self.description, data['description'])
-        self.type_tag(self.release, data['release'])
+        self.type_text(self.release, data['release'])
         self.type_tag(self.environments, data['environment'])
         self.type_tag(self.versions, data['version'])
         self.select(self.priority, data['priority'])

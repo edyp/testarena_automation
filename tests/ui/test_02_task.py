@@ -1,6 +1,6 @@
 import traceback as tb_cls
 import pytest
-from pages.tasks_page import TasksPage
+from pages.tasks_page import (TasksPage, TaskDetailsPage)
 
 
 def test_add_new_task(login, task_testing_data, driver):
@@ -21,3 +21,6 @@ def test_add_new_task(login, task_testing_data, driver):
             tasks_page.delete_all_tasks()
         elif form_page.url == driver.current_url:
             form_page.cancel()
+        else:
+            TaskDetailsPage(driver).close_task_details()
+            tasks_page.delete_all_tasks()

@@ -8,8 +8,8 @@ from pages.core_app_page import CoreAppPage
 def pytest_addoption(parser):
     parser.addoption(
         '--browser', action='store', default='chrome',
-        help='possibilities: chrome, firefox, edge, safari',
-        choices=('chrome', 'firefox', 'edge', 'safari')
+        help='Choose browser you have on your machine.',
+        choices=('chrome', 'firefox', 'safari')
     )
 
 @pytest.fixture(scope='session')
@@ -22,8 +22,7 @@ def driver(browser):
         driver = webdriver.Chrome()
     elif browser == 'firefox':
         driver = webdriver.Firefox()
-    elif browser == 'edge':
-        driver = webdriver.Edge()
+        driver.implicitly_wait(5)
     else:
         driver = webdriver.Safari()
     yield driver
